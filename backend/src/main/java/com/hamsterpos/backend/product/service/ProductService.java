@@ -1,4 +1,5 @@
 package com.hamsterpos.backend.product.service;
+import com.hamsterpos.backend.exception.ResourceNotFoundException;
 import com.hamsterpos.backend.product.entity.Product;
 import com.hamsterpos.backend.product.repository.ProductRepository;
 import org.springframework.data.domain.Sort;
@@ -24,17 +25,20 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Optional<Product> findProductById(long id) {
-        return productRepository.findById(id);
+    public Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
     }
 
-    public Optional<Product> updateProduct(long id, Product updatedProduct) {
-        return productRepository.findById(id).map(existing -> {
-            existing.setName(updatedProduct.getName());
-            existing.setPrice(updatedProduct.getPrice());
-            existing.setStock(updatedProduct.getStock());
-            return productRepository.save(existing);
-        });
+    // CHANGE 2: The return type is now Product, not Optional<Product>
+    public Product updateProduct(Long id, Product updatedProduct) {
+        Product existing = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot update. Product not found with ID: " + id));
+
+        existing.setName(updatedProduct.getName());
+        existing.setPrice(updatedProduct.getPrice());
+        existing.setStock(updatedProduct.getStock());
+        return productRepository.save(existing);
     }
 
     public boolean deleteProduct(long id) {
@@ -43,6 +47,10 @@ public class ProductService {
             return true;
         }
         return false;
+    }
+
+    public List<Product> getLowStockProducts() {
+        return productRepository.findByStockLessThan(5);
     }
 
 

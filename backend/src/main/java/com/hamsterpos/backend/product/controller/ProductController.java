@@ -1,12 +1,16 @@
 package com.hamsterpos.backend.product.controller;
 
+import com.hamsterpos.backend.product.dto.ProductMapper;
+import com.hamsterpos.backend.product.dto.ProductResponseDto;
 import com.hamsterpos.backend.product.entity.Product;
 import com.hamsterpos.backend.product.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
@@ -18,37 +22,36 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
-        return ResponseEntity.ok(service.findAllProducts());
+    public ResponseEntity<List<ProductResponseDto>> getAll() {
+        List<ProductResponseDto> dtos = service.findAllProducts()
+                .stream()
+                .map(ProductMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
+    public ResponseEntity<ProductResponseDto> create(@RequestBody Product product) {
         Product createdProduct = service.addProduct(product);
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(ProductMapper.toDto(createdProduct), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getById(@PathVariable Long id) {
-        Optional<Product> product = service.findProductById(id);
-        return product.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
+        Product product = service.findProductById(id);
+        return ResponseEntity.ok(ProductMapper.toDto(product));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
-        return service.updateProduct(id, product)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProductResponseDto> update(@PathVariable Long id, @RequestBody Product product) {
+        Product updatedProduct = service.updateProduct(id, product);
+        return ResponseEntity.ok(ProductMapper.toDto(updatedProduct));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = service.deleteProduct(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build(); // 204 No Content
-        } else {
-            return ResponseEntity.notFound().build(); // 404 Not Found
-        }
+        return deleted ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }
