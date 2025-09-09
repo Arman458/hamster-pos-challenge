@@ -29,8 +29,6 @@ public class OrderItem {
     @Column(nullable = false)
     private Integer quantity;
 
-    // We store the price here to capture the price at the time of purchase.
-    // This prevents historical orders from changing if the product price is updated later.
     @Column(nullable = false)
     private BigDecimal price;
 }

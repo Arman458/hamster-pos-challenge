@@ -61,18 +61,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetails.getAuthorities()
                 );
 
-                // Set additional details about the request on the authentication token
+
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
-                // Update the SecurityContextHolder with the new authentication token.
-                // Spring Security will now consider this user authenticated.
+
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        // Always pass the request to the next filter in the chain
         filterChain.doFilter(request, response);
     }
 }

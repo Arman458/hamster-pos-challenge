@@ -21,6 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 @EnableWebSecurity
@@ -29,33 +33,41 @@ public class SecurityConfig {
 
     private final UserRepository userRepository;
 
+    @Value("${app.cors.allowed-origins}")
+    private String[] allowedOrigins;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        // Public auth endpoints
                         .requestMatchers("/auth/**").permitAll()
-
-                        // Admin-only product management
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-
-                        // Admin-only endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                        // Everything else requires login
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(customAccessDeniedHandler()) // 👈 now works
-                )
+                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider(userDetailsService(), passwordEncoder()))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(java.util.List.of(allowedOrigins));
+        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

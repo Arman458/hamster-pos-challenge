@@ -42,7 +42,7 @@ public class OrderController {
         List<Order> orders = orderService.findMyOrders(userDetails.getUsername());
 
         List<OrderResponseDto> dtoList = orders.stream()
-                .map(OrderMapper::toDto) // Use a clean method reference
+                .map(OrderMapper::toDto)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(dtoList);
