@@ -11,3 +11,10 @@ final productsProvider = FutureProvider.autoDispose<List<Product>>((ref) {
   final productRepository = ref.watch(productRepositoryProvider);
   return productRepository.getProducts();
 });
+
+// New: single product by ID
+final productDetailProvider =
+    FutureProvider.autoDispose.family<Product, int>((ref, productId) {
+  final productRepository = ref.watch(productRepositoryProvider);
+  return productRepository.getProductById(productId);
+});

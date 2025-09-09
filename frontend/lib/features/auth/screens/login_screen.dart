@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hamster_pos_frontend/features/auth/providers/auth_provider.dart';
 import 'package:hamster_pos_frontend/features/auth/screens/register_screen.dart';
-// TODO: Add this import once the catalog screen is created
-// import 'package:hamster_pos_frontend/features/products/screens/catalog_screen.dart';
+import 'package:hamster_pos_frontend/features/products/screens/catalog_screen.dart';
 
 class LoginScreen extends ConsumerWidget {
   static const route = '/login';
@@ -32,8 +31,7 @@ class LoginScreen extends ConsumerWidget {
             );
         if (success && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Login Successful!")));
-          // TODO: Uncomment this line to navigate to the catalog
-          // context.go(CatalogScreen.route);
+          context.go(CatalogScreen.route);
         }
       }
     }

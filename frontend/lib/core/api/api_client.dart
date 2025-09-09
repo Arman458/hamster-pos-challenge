@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
   final Dio _dio = Dio();
-  final String _baseUrl = 'http://10.0.2.2:8081/api'; // IMPORTANT: Use 10.0.2.2 for Android Emulator
+  final String _baseUrl = 'http://localhost:8081'; // IMPORTANT: Use 10.0.2.2 for Android Emulator
 
   ApiClient() {
     _dio.options.baseUrl = _baseUrl;
