@@ -1,6 +1,6 @@
 # HamsterPOS - Mini E-Commerce Flutter Challenge
 
-This repository contains the complete solution for the Flutter Mini-E-Commerce (Admin + User) coding challenge. The project is structured as a modular monolith with a Spring Boot backend and a Flutter frontend, demonstrating a full-stack application that is clean, scalable, and ready for future microservice extraction.
+This repository contains my submission for the Flutter Mini-E-Commerce (Admin + User) coding challenge. The project is structured as a modular monolith with a Spring Boot backend and a Flutter frontend, demonstrating a full-stack application that is clean, scalable, and ready for future microservice extraction.
 
 ## Demo
 
