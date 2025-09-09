@@ -24,7 +24,7 @@ The application is a lightweight e-commerce platform with two primary roles: **C
 -   **Transactional Order Management:** Users can place orders, which atomically decrements stock on the backend.
 -   **Order History:** Users can view their past orders.
 -   **Complete Admin Panel:** A dedicated, role-protected interface with tabs for adding products, viewing all system orders, and viewing low-stock items.
--   **Robust API:** A well-structured REST API with professional, graceful JSON error handling for all scenarios (e.g., 401, 403, 404, 409).
+-   **Robust API:** A well-structured REST API with professional, structured error messages for all scenarios (e.g., 401, 403, 404, 409).
 
 ---
 
@@ -101,7 +101,7 @@ This project was completed over a 5-day period. The strategy was to build and st
 
 -   **Day 4: Backend Polish & Frontend Foundation**
     -   **Focus:** Finalizing all backend requirements and scaffolding the Flutter application.
-    -   **Tasks (Backend):** Implemented role-based security, the transactional `Order` service, and all admin endpoints. A `GlobalExceptionHandler` and DTOs for all API responses were added to complete the professional-grade API.
+    -   **Tasks (Backend):** Implemented role-based security, the transactional `Order` service, and all admin endpoints. A `GlobalExceptionHandler` and DTOs for all API responses were added to complete the clean, consistent API.
     -   **Tasks (Frontend):** Kicked off the Flutter implementation, setting up the foundational `ApiClient` with JWT interceptors, the router, and core providers.
 
 -   **Day 5: Full Frontend Implementation & Integration**
